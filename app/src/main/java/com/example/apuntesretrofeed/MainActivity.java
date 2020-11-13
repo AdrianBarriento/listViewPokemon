@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 
+import com.example.apuntesretrofeed.common.PokemonAdapter;
 import com.example.apuntesretrofeed.domain.JsonResponse;
 import com.example.apuntesretrofeed.domain.PokemonList;
 import com.example.apuntesretrofeed.iface.ApiPokemon;
@@ -24,10 +26,14 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = getClass().getName();
     private List<PokemonList> mPokemon;
+    private ListView listView =null;
+    PokemonAdapter adapter = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getAllPokemon();
+        listView = findViewById(R.id.listView);
 
     }
 
@@ -47,9 +53,13 @@ public class MainActivity extends AppCompatActivity {
                 if(response!=null && response.body() != null){
                     mPokemon = response.body().results;
                     for (PokemonList p : mPokemon) {
-                        Log.d(TAG, p.getNombre());
+                        Log.d(TAG, "pokemon:   "+p.getNombre());
                         Log.d(TAG, p.getUrl());
                     }
+
+                    adapter=new PokemonAdapter(MainActivity.this, mPokemon);
+                    listView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
             }
 
